@@ -21,8 +21,7 @@ function process_mddefs(blocks::Vector{OCBlock}, isconfig::Bool)::Nothing
         m = match(ASSIGN_PAT, inner)
         if isnothing(m)
             @warn "Found delimiters for an @def environment but it didn't " *
-                  "have the right @def var = ... format. Verify (ignoring " *
-                  "for now)."
+                  "have the right @def var = ... format. " * ignoring() 
             continue
         end
         vname, vdef = m.captures[1:2]

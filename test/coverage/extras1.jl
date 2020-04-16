@@ -7,7 +7,7 @@ end
 @testset "Conv-html" begin
     @test_throws F.HTMLFunctionError F.convert_html("{{insert bb cc}}")
     @test_throws F.HTMLFunctionError F.convert_html("{{href aa}}")
-    @test (@test_logs (:warn, "Unknown dictionary name aa in {{href ...}}. Ignoring") F.convert_html("{{href aa bb}}")) == "<b>??</b>"
+    @test (@test_logs (:warn, r"Unknown dictionary name aa in {{href ...}}. *") F.convert_html("{{href aa bb}}")) == "<b>??</b>"
     @test_throws F.HTMLBlockError F.convert_html("{{if asdf}}{{end}}")
     @test_throws F.HTMLBlockError F.convert_html("{{if asdf}}")
     @test_throws F.HTMLBlockError F.convert_html("{{isdef asdf}}")
@@ -18,7 +18,7 @@ end
     s = """
         @def blah
         """
-    @test (@test_logs (:warn, "Found delimiters for an @def environment but it didn't have the right @def var = ... format. Verify (ignoring for now).") (s |> fd2html_td)) == ""
+    @test (@test_logs (:warn, r"Found delimiters for an @def environment but it didn't have the right @def var = ... format. *") (s |> fd2html_td)) == ""
 
     s = """
         Blah

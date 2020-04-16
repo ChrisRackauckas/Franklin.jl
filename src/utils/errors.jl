@@ -71,3 +71,10 @@ end
 struct LiterateRelativePathError <: FranklinException
     m::String
 end
+
+"""
+    ignoring
+
+Internal function to complete warning messages.
+"""
+ignoring() = "Ignoring... ($(locvar("fd_rpath")))."

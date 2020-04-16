@@ -21,7 +21,7 @@ function convert_html_fblock(β::HFun)::String
     end
     # if we get here, then the function name is unknown, warn and ignore
     @warn "I found a function block '{{$(β.fname) ...}}' but I don't " *
-          "recognise the function name. Ignoring."
+          "recognise the function name. " * ignoring()
     # returning empty
     return ""
 end
@@ -50,7 +50,7 @@ function hfun_fill(params::Vector{String})::String
             tmp_repl = locvar(vname)
             if isnothing(tmp_repl)
                 @warn "I found a '{{fill $vname}}' but I do not know the " *
-                      "variable '$vname'. Ignoring."
+                      "variable '$vname'. " * ignoring()
             else
                 repl = string(tmp_repl)
             end
@@ -60,7 +60,7 @@ function hfun_fill(params::Vector{String})::String
         tmp_repl = pagevar(rpath, vname)
         if isnothing(tmp_repl)
             @warn "I found a '{{fill $vname $rpath}}' but I do not know the " *
-                  "variable '$vname' or the path '$rpath'. Ignoring."
+                  "variable '$vname' or the path '$rpath'. " * ignoring()
         else
             repl = string(tmp_repl)
         end
@@ -89,7 +89,8 @@ function hfun_insert(params::Vector{String})::String
     if isfile(fpath)
         repl = convert_html(read(fpath, String))
     else
-        @warn "I found an {{insert ...}} block and tried to insert '$fpath' but I couldn't find the file. Ignoring."
+        @warn "I found an {{insert ...}} block and tried to insert '$fpath' " *
+              "I couldn't find the file. " * ignoring()
     end
     return repl
 end
@@ -116,7 +117,7 @@ function hfun_href(params::Vector{String})::String
         haskey(PAGE_BIBREFS, hkey) || return repl
         repl = html_ahref_key(hkey, PAGE_BIBREFS[hkey])
     else
-        @warn "Unknown dictionary name $dname in {{href ...}}. Ignoring"
+        @warn "Unknown dictionary name $dname in {{href ...}}. " * ignoring()
     end
     return repl
 end

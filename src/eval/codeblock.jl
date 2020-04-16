@@ -81,7 +81,8 @@ function resolve_code_block(ss::SubString)::String
     isnothing(rpath) && return html_code(code, lang)
     # 1.b if not julia code, eval is not supported
     if lang != "julia"
-        @warn "Evaluation of non-Julia code blocks is not yet supported."
+        @warn "Evaluation of non-Julia code blocks is not yet supported. " *
+              ignoring()
         return html_code(code, lang)
     end
 

@@ -58,7 +58,7 @@ end
         done.
         """
     h = ""
-    @test_logs (:warn, "Evaluation of non-Julia code blocks is not yet supported.") (h = s |> seval)
+    @test_logs (:warn, r"Evaluation of non-Julia code blocks is not yet supported.*") (h = s |> seval)
 
     @test isapproxstr(h, raw"""
             <p>Simple code:
@@ -188,7 +188,7 @@ end
         done.
         """
 
-    @test (@test_logs (:warn, "Evaluation of non-Julia code blocks is not yet supported.") h |> seval) == "<p>Simple code: <pre><code class=\"language-python\">sqrt(-1)</code></pre> done.</p>\n"
+    @test (@test_logs (:warn, r"Evaluation of non-Julia code blocks is not yet supported.*") h |> seval) == "<p>Simple code: <pre><code class=\"language-python\">sqrt(-1)</code></pre> done.</p>\n"
 end
 
 # temporary fix for 186: make error appear and also use `abspath` in internal include

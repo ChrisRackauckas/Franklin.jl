@@ -19,10 +19,10 @@
     end
 
     hs = raw"""abc {{ fill nope }} ... """
-    @test (@test_logs (:warn, "I found a '{{fill nope}}' but I do not know the variable 'nope'. Ignoring.") F.convert_html(hs))  == "abc  ... "
+    @test (@test_logs (:warn, r"I found a '{{fill nope}}' but I do not know the variable 'nope'. Ignoring*") F.convert_html(hs))  == "abc  ... "
 
     hs = raw"""unknown fun {{ unknown fun }} and see."""
-    @test (@test_logs (:warn, "I found a function block '{{unknown ...}}' but I don't recognise the function name. Ignoring.") F.convert_html(hs)) == "unknown fun  and see."
+    @test (@test_logs (:warn, r"I found a function block '{{unknown ...}}' but I don't recognise the function name. Ignoring.*") F.convert_html(hs)) == "unknown fun  and see."
 end
 
 
@@ -36,7 +36,7 @@ end
     @test F.convert_html(hs) == "Trying to insert: some random text to insert and see.\n"
 
     hs = raw"""Trying to insert: {{ insert nope.rnd }} and see."""
-    @test (@test_logs (:warn, "I found an {{insert ...}} block and tried to insert '$(joinpath(F.PATHS[:src_html], "nope.rnd"))' but I couldn't find the file. Ignoring.") F.convert_html(hs)) == "Trying to insert:  and see."
+    @test (@test_logs (:warn, r"I found an {{insert ...}} block and tried to insert *") F.convert_html(hs)) == "Trying to insert:  and see."
 end
 
 @testset "h-insert-fs2" begin
@@ -49,7 +49,7 @@ end
     @test F.convert_html(hs) == "Trying to insert: some random text to insert and see.\n"
 
     hs = raw"""Trying to insert: {{ insert nope.rnd }} and see."""
-    @test (@test_logs (:warn, "I found an {{insert ...}} block and tried to insert '$(joinpath(F.PATHS[:layout], "nope.rnd"))' but I couldn't find the file. Ignoring.") F.convert_html(hs)) == "Trying to insert:  and see."
+    @test (@test_logs (:warn, r"I found an {{insert ...}} block and *") F.convert_html(hs)) == "Trying to insert:  and see."
 end
 
 
