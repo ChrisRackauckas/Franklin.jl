@@ -189,7 +189,15 @@ function optimize(; prerender::Bool=true, minify::Bool=true, sig::Bool=false,
     # Minification
     #
     if minify && (succ || no_fail_prerender)
-        if FD_CAN_MINIFY
+        if FD_CAN_MINIFY_0
+            start = time()
+            mmsg = rpad("→ Minifying *.[html|css] files...", 35)
+            print(mmsg)
+            for root, _, files in walkdir(path(:site))
+                fpath =
+            end
+            print_final(mmsg, start)
+        elseif FD_CAN_MINIFY
             start = time()
             mmsg = rpad("→ Minifying *.[html|css] files...", 35)
             print(mmsg)
