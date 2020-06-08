@@ -371,7 +371,7 @@ function set_vars!(vars::PageVars, assignments::Vector{Pair{String,String}}
         catch err
             throw(PageVariableError(
                 "An error (of type '$(typeof(err))') occurred when trying " *
-                "to evaluate '$tmp' in a page variable assignment."))
+                "to evaluate a page variable assignment."))
         end
         if haskey(vars, key)
             # if the retrieved value has the right type, assign it to the corresponding key

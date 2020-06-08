@@ -199,8 +199,8 @@ function process_html_for(hs::AS, qblocks::Vector{AbstractBlock},
     # check that the first element of the iterate has the same length
     el1 = first(iter)
     length(vnames) in (1, length(el1)) ||
-        throw(HTMLBlockError("In a {{for ...}}, the first element of" *
-                "the iterate has length $(length(el1)) but tried to unpack" *
+        throw(HTMLBlockError("In a {{for ...}}, the first element of " *
+                "the iterate has length $(length(el1)) but tried to unpack " *
                 "it as $(length(vnames)) variables."))
 
     # so now basically we have to simply copy-paste the content replacing

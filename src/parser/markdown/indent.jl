@@ -7,11 +7,18 @@ spaces).
 function find_indented_blocks!(tokens::Vector{Token}, st::String)::Nothing
     # index of the line return tokens
     lr_idx = [j for j in eachindex(tokens) if tokens[j].name == :LINE_RETURN]
-    remove = Int[]
-    # go over all line return tokens; if they are followed by either four spaces
-    # or by a tab, then check if the line is empty or looks like a list, otherwise
-    # change the token for a LR_INDENT token which will be captured as part of code
-    # blocks.
+
+    # XXX XXX XXX
+
+    # go over all line return tokens; if they are followed by either four
+    # spaces or by a tab, then it's a candidate for which we check
+    #     > is the line empty?             ==> discard
+    #     > are we in a open @def world?   ==> take
+    #     > does it look like a list?      ==> discard
+    #     > otherwise                      ==> take
+    # where 'take' means transform the token from a LINE_RETURN to a LR_INDENT
+    # token which will be captured as part of blocks of indented lines for
+    # further processing
     for i in 1:length(lr_idx)-1
         # capture start and finish of the line (from line return to line return)
         start  = from(tokens[lr_idx[i]])   # first :LINE_RETURN
@@ -25,20 +32,25 @@ function find_indented_blocks!(tokens::Vector{Token}, st::String)::Nothing
         else
             continue
         end
-        # is there something on that line? if so, does it start with a list indicator
-        # like `*`, `-`, `+` or [0-9](.|\)) ? in which case this takes precedence (commonmark)
-        # TODO: document clearly that with fenced code blocks there are far fewer cases for issues
-        code_line = subs(st, nextind(st, start+length(indent)), prevind(st, finish))
+        # is there something on that line? if so, does it start with a list
+        # indicator like `*`, `-`, `+` or [0-9](.|\)) ? in which case this
+        # takes precedence (commonmark)
+        code_line = subs(st,
+                         nextind(st, start+length(indent)),
+                         prevind(st, finish))
         scl       = strip(code_line)
         isempty(scl) && continue
         # list takes precedence (this may cause clash but then just use fenced code blocks...)
-        looks_like_a_list = scl[1] ∈ ('*', '-', '+') ||
-                            (length(scl) ≥ 2 &&
-                                scl[1] ∈ ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9') &&
-                                scl[2] ∈ ('.', ')'))
+        looks_like_a_list =
+            scl[1] ∈ ('*', '-', '+') || (
+                length(scl) ≥ 2 &&
+                scl[1] ∈ ('0','1','2','3','4','5','6','7','8','9') &&
+                scl[2] ∈ ('.', ')')
+                )
         looks_like_a_list && continue
         # if here, it looks like a code line (and will be considered as such)
-        tokens[lr_idx[i]] = Token(:LR_INDENT, subs(st, start, start+length(indent)), i+1)
+        tokens[lr_idx[i]] = Token(:LR_INDENT,
+                                subs(st, start, start+length(indent)), i+1)
     end
     return nothing
 end
